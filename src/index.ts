@@ -12,6 +12,7 @@ import { Text } from "@earendil-works/pi-tui";
 import { loadConfig } from "./config";
 import { formatOutput } from "./renderUtils";
 import { cleanContextMessages } from "./contextUtils";
+import fs from "fs";
 import path from "path";
 import os from "os";
 
@@ -61,7 +62,20 @@ function getTools(cwd: string) {
 }
 
 export default function (pi: ExtensionAPI) {
-	const configPath = path.join(os.homedir(), ".pi", "agent", "extensions", "pi-tools-compact-display", "config.json");
+	const globalConfigPath = path.join(os.homedir(), ".pi", "agent", "extensions", "pi-tools-compact-display", "config.json");
+	let configPath = globalConfigPath;
+
+	try {
+		// Use import.meta.url to find the local config.json relative to dist/index.js
+		const currentDir = path.dirname(new URL(import.meta.url).pathname);
+		const localConfigPath = path.join(currentDir, "..", "config.json");
+		if (fs.existsSync(localConfigPath) && !fs.existsSync(globalConfigPath)) {
+			configPath = localConfigPath;
+		}
+	} catch (e) {
+		// Ignore errors
+	}
+
 	const config = loadConfig(configPath);
 
 	// Monkey patch registerTool to apply config dynamically
