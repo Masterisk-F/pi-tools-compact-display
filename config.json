@@ -1,4 +1,0 @@
-{
-  "bash": { "mode": "lines", "outputLines": 3, "noPadding": true },
-  "read": { "mode": "count_only" }
-}
