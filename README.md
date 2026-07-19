@@ -4,6 +4,8 @@ An extension for the Pi Assistant that allows you to finely customize the termin
 
 It helps keep your context and screen clean by limiting overly long tool outputs or hiding unnecessary tool calls, summarizing them instead.
 
+![screenshot](screenshot1.png)
+
 ## Features
 
 - **Per-Tool Configuration**: Set different display modes for each tool.
