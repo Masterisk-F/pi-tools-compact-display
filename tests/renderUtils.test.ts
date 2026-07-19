@@ -33,6 +33,27 @@ describe('formatOutput', () => {
     expect(res).toBe("line1\n\nline2");
   });
   
+  it('should return empty string when outputLines is 0', () => {
+    const input = "line1\nline2\nline3";
+    const config: ToolConfig = { mode: 'lines', outputLines: 0 };
+    const res = formatOutput(input, config, false);
+    expect(res).toBe("");
+  });
+
+  it('should handle noPadding with outputLines 0 - return empty', () => {
+    const input = "\n\nline1\n\nline2\n\n";
+    const config: ToolConfig = { mode: 'lines', noPadding: true, outputLines: 0 };
+    const res = formatOutput(input, config, false);
+    expect(res).toBe("");
+  });
+
+  it('should remove only leading/trailing/consecutive empty lines with noPadding', () => {
+    const input = "\n\nline1\n\n\nline2\n\n";
+    const config: ToolConfig = { mode: 'lines', noPadding: true, outputLines: 10 };
+    const res = formatOutput(input, config, false);
+    expect(res).toBe("line1\nline2");
+  });
+
   it('should return input as-is for default mode', () => {
     const input = "line1\n\nline2";
     const config: ToolConfig = { mode: 'default' };
