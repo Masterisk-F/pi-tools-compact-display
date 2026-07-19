@@ -97,6 +97,11 @@ pi install .
     "noPadding": true 
   },
   
+  "mcp:tavily_tavily_search": { "mode": "count_only" },
+  "mcp:list": { "mode": "lines", "outputLines": 10 },
+  "mcp": { "mode": "default" },
+  "default": { "mode": "count_only" },
+
   "my_custom_tool": {
     "mode": "count_only"
   }
@@ -104,6 +109,20 @@ pi install .
 ```
 
 *※ `my_custom_tool` のように、Pi標準ツール以外の別の拡張機能で追加されたツール名であっても指定可能です。*
+
+### サブツール・アクションごとの個別設定（MCPツールなど）
+
+`mcp` ツールのような、内部でさらに別のツールやアクションを呼び出す「ゲートウェイ型のツール」については、引数（`tool` や `action` 等）に応じた個別設定が可能です。
+
+設定の優先順位は、**「サブツールの個別設定 ＞ ツール全体の設定 ＞ `default` キーの設定 ＞ システム標準」** のカスケード（段階的フォールバック）となっており、これはMCPに限らずすべてのツールに共通の仕組みです。
+
+**MCPツールの設定例:**
+- **`mcp:ツール名`**: 特定のMCPツールを実行した場合（例: `"mcp:tavily_tavily_search": { "mode": "count_only" }`）
+- **`mcp:list`**: サーバーのツール一覧を取得した場合（例: `"mcp:list": { "mode": "lines", "outputLines": 10 }`）
+- **`mcp:connect`**: サーバーに接続した場合
+- **`mcp`**: 上記以外のMCP呼び出し、または個別設定がない場合のMCP全体のフォールバック設定
+
+*※この優先順位（個別設定 ＞ `default` 設定）は標準ツール（例: `read`、`bash`）に対しても同じように適用されます。*
 
 ---
 

@@ -24,9 +24,18 @@ export function loadConfig(configPath: string): Config {
 
   // Proxy to return 'default' for any unconfigured tool
   return new Proxy(userConfig as Config, {
-    get(target, prop: string) {
+    get(target, prop: string | symbol) {
+      if (typeof prop === 'symbol') {
+        return Reflect.get(target, prop);
+      }
+      if (prop === 'then' || prop === 'toJSON') {
+        return undefined;
+      }
       if (prop in target) {
         return target[prop];
+      }
+      if ('default' in target) {
+        return target['default'];
       }
       return { mode: 'default' };
     }

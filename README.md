@@ -97,6 +97,11 @@ The configuration is in JSON format, where the key is the "tool name" and the va
     "noPadding": true 
   },
   
+  "mcp:tavily_tavily_search": { "mode": "count_only" },
+  "mcp:list": { "mode": "lines", "outputLines": 10 },
+  "mcp": { "mode": "default" },
+  "default": { "mode": "count_only" },
+
   "my_custom_tool": {
     "mode": "count_only"
   }
@@ -104,6 +109,22 @@ The configuration is in JSON format, where the key is the "tool name" and the va
 ```
 
 *Note: You can specify any tool name, including custom tools added by other extensions like `my_custom_tool`.*
+
+### Sub-tool and Action-Specific Configuration (Gateway Tools like MCP)
+
+For "gateway tools" that call other tools or actions internally (such as the `mcp` tool), you can configure them specifically based on their arguments (like `tool` or `action`).
+
+The configuration priority is evaluated in a cascading fallback:
+**Specific Sub-tool Configuration > General Tool Configuration > `default` Key Configuration > System Default**.
+This mechanism applies to all tools, not just MCP.
+
+**Example for MCP tools:**
+- **`mcp:<tool_name>`**: When a specific MCP tool is called (e.g., `"mcp:tavily_tavily_search": { "mode": "count_only" }`).
+- **`mcp:list`**: When listing available tools on a server (e.g., `"mcp:list": { "mode": "lines", "outputLines": 10 }`).
+- **`mcp:connect`**: When connecting to a server.
+- **`mcp`**: The general fallback for MCP calls that don't match any specific configuration.
+
+*Note: The same priority (`specific setting > "default" setting`) applies to built-in tools like `read` and `bash` as well.*
 
 ---
 
