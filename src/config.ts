@@ -8,7 +8,13 @@ export interface ToolConfig {
   noPadding?: boolean;
 }
 
-export type Config = Record<string, ToolConfig>;
+export interface UserConfig {
+  noPadding?: boolean;
+}
+
+export type Config = Record<string, ToolConfig> & {
+  user?: UserConfig;
+};
 
 export function loadConfig(configPath: string): Config {
   let userConfig: Partial<Config> = {};
@@ -33,6 +39,9 @@ export function loadConfig(configPath: string): Config {
       }
       if (prop in target) {
         return target[prop];
+      }
+      if (prop === 'user') {
+        return undefined;
       }
       if ('default' in target) {
         return target['default'];

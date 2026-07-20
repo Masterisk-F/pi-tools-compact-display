@@ -1,8 +1,10 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
 	ToolExecutionComponent,
+	UserMessageComponent,
+	AssistantMessageComponent,
 } from "@earendil-works/pi-coding-agent";
-import { Text } from "@earendil-works/pi-tui";
+import { Text, Container, Spacer } from "@earendil-works/pi-tui";
 import { loadConfig, resolveToolConfig, getEffectiveToolName } from "./config";
 import { formatOutput } from "./renderUtils";
 import { cleanContextMessages } from "./contextUtils";
@@ -16,6 +18,89 @@ export default function (pi: ExtensionAPI) {
 	const configPath = path.join(os.homedir(), ".pi", "agent", "extensions", "pi-tools-compact-display", "config.json");
 	const config = loadConfig(configPath);
 	const tracker = new SummaryTracker();
+
+	// @ts-ignore
+	const originalRebuild = UserMessageComponent.prototype.rebuild;
+	// @ts-ignore
+	UserMessageComponent.prototype.rebuild = function () {
+		originalRebuild.call(this);
+		if (config.user?.noPadding) {
+			const box = (this as any).children?.[0];
+			if (box) {
+				box.paddingY = 0;
+				if (typeof box.invalidate === 'function') {
+					box.invalidate();
+				}
+			}
+		}
+	};
+
+	let lastAddedSpacer: any = null;
+	let lastSignificantComponentType: string | null = null;
+
+	const isSpacer = (c: any) => c && c.constructor && c.constructor.name === "Spacer";
+	const isUserMessage = (c: any) => c && c.constructor && c.constructor.name === "UserMessageComponent";
+	const isAssistantMessage = (c: any) => c && c.constructor && c.constructor.name === "AssistantMessageComponent";
+
+	// Retrieve Container prototype from AssistantMessageComponent to be loader-agnostic
+	const containerProto = Object.getPrototypeOf(AssistantMessageComponent.prototype) || Container.prototype;
+
+	// @ts-ignore
+	const originalAddChild = containerProto.addChild;
+	// @ts-ignore
+	const originalAddChildTui = Container.prototype.addChild;
+
+	const hasProto = (obj: any, proto: any) => {
+		let p = Object.getPrototypeOf(obj);
+		while (p) {
+			if (p === proto) return true;
+			p = Object.getPrototypeOf(p);
+		}
+		return false;
+	};
+
+	const customAddChild = function (this: any, comp: any) {
+		if (config.user?.noPadding) {
+			if (isSpacer(comp)) {
+				lastAddedSpacer = comp;
+				if (lastSignificantComponentType === "user") {
+					comp.lines = 0;
+				}
+			} else if (isUserMessage(comp)) {
+				if (lastAddedSpacer) {
+					lastAddedSpacer.lines = 0;
+				}
+				lastSignificantComponentType = "user";
+				lastAddedSpacer = null;
+			} else if (isAssistantMessage(comp)) {
+				lastSignificantComponentType = "assistant";
+				lastAddedSpacer = null;
+			}
+		}
+
+		if (originalAddChildTui !== originalAddChild) {
+			if (hasProto(this, Container.prototype)) {
+				originalAddChildTui.call(this, comp);
+			} else {
+				originalAddChild.call(this, comp);
+			}
+		} else {
+			originalAddChild.call(this, comp);
+		}
+
+		if (config.user?.noPadding) {
+			if (isAssistantMessage(comp)) {
+				lastSignificantComponentType = "assistant";
+			}
+		}
+	};
+
+	// @ts-ignore
+	containerProto.addChild = customAddChild;
+	if (Container.prototype !== containerProto) {
+		// @ts-ignore
+		Container.prototype.addChild = customAddChild;
+	}
 
 	// @ts-ignore
 	const originalGetCallRenderer = ToolExecutionComponent.prototype.getCallRenderer;
@@ -141,9 +226,12 @@ export default function (pi: ExtensionAPI) {
 		if (content.some((b: any) => b.type === "tool_use")) return;
 
 		const summary = tracker.getSummaryLine();
+		const hasErrors = tracker.hasErrors();
+		tracker.reset();
+
 		const theme = ctx?.ui?.theme;
 		const styledSummary = theme
-			? theme.bg(tracker.hasErrors() ? "toolErrorBg" : "toolSuccessBg", ` ${summary} `)
+			? theme.bg(hasErrors ? "toolErrorBg" : "toolSuccessBg", ` ${summary} `)
 			: summary;
 
 		const newContent = content.map((b: any) => {
@@ -161,9 +249,6 @@ export default function (pi: ExtensionAPI) {
 		const cleaned = cleanContextMessages(event.messages);
 		return { messages: cleaned };
 	});
-
-	// ── Reset on each new prompt ──
-	pi.on("agent_start", () => tracker.reset());
 
 	// ── Register built-in tools ──
 	registerCustomTools(pi);

@@ -83,6 +83,9 @@ The configuration is in JSON format, where the key is the "tool name" and the va
 
 ```json
 {
+  "user": {
+    "noPadding": true
+  },
   "read": { "mode": "count_only" },
   "ls": { "mode": "count_only" },
   "find": { "mode": "count_only" },
@@ -127,6 +130,21 @@ This mechanism applies to all tools, not just MCP.
 - **`mcp`**: The general fallback for MCP calls that don't match any specific configuration.
 
 *Note: The same priority (`specific setting > "default" setting`) applies to built-in tools like `read` and `bash` as well.*
+
+### User Prompt Padding Configuration
+
+If you want to remove the vertical empty lines (vertical padding) that appear above and below the prompt messages you enter, you can configure them specifically using the `"user"` key. This configuration is not affected by other configurations like `"default"` and is only applied if explicitly defined.
+
+**Configuration Example:**
+```json
+{
+  "user": {
+    "noPadding": true
+  }
+}
+```
+
+- **`noPadding`** (`boolean`): Set to `true` to remove the empty lines (padding) inserted above and below your prompt input, making the UI extremely compact.
 
 ---
 

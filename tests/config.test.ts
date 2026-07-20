@@ -65,6 +65,27 @@ describe('loadConfig', () => {
     expect((config as any).toJSON).toBeUndefined();
     expect((config as any).then).toBeUndefined();
   });
+
+  it('should support "user" config and not fall back to "default"', () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true);
+    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
+      default: { mode: 'lines', noPadding: false },
+      user: { noPadding: true }
+    }));
+
+    const config = loadConfig('/valid/path.json');
+    expect(config.user?.noPadding).toBe(true);
+  });
+
+  it('should return undefined for "user" if not specified, even if "default" is specified', () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true);
+    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
+      default: { mode: 'lines', noPadding: true }
+    }));
+
+    const config = loadConfig('/valid/path.json');
+    expect(config.user).toBeUndefined();
+  });
 });
 
 describe('getEffectiveToolName', () => {
