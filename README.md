@@ -1,4 +1,4 @@
-# pi-tools-compact-display
+# pi-compact-display
 
 An extension for the Pi Assistant that allows you to finely customize the terminal (TUI) output for various tools (e.g., bash, read, ls, edit) on a per-tool basis.
 
@@ -20,7 +20,7 @@ It helps keep your context and screen clean by limiting overly long tool outputs
 
 ```bash
 # Clone or navigate to the repository
-cd pi-tools-compact-display
+cd pi-compact-display
 
 # Install dependencies
 npm install
@@ -39,7 +39,7 @@ pi install .
 Create a configuration file named `config.json` at the following location:
 
 **File Path:**
-`~/.pi/agent/extensions/pi-tools-compact-display/config.json`
+`~/.pi/agent/extensions/pi-compact-display/config.json`
 
 ### Configuration Structure
 

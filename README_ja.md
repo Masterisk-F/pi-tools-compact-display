@@ -1,4 +1,4 @@
-# pi-tools-compact-display
+# pi-compact-display
 
 Piアシスタント向けの拡張機能です。アシスタントが各種ツール（bash、read、ls、edit など）を実行した際のターミナル（TUI）上での出力表示を、ツールごとに細かくカスタマイズできます。
 
@@ -20,7 +20,7 @@ Piアシスタント向けの拡張機能です。アシスタントが各種ツ
 
 ```bash
 # リポジトリへ移動
-cd pi-tools-compact-display
+cd pi-compact-display
 
 # 依存関係のインストール
 npm install
@@ -39,7 +39,7 @@ pi install .
 設定ファイルは以下の場所に `config.json` という名前で作成します。
 
 **ファイルパス:**
-`~/.pi/agent/extensions/pi-tools-compact-display/config.json`
+`~/.pi/agent/extensions/pi-compact-display/config.json`
 
 ### 設定ファイルの構造
 
