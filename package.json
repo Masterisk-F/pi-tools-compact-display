@@ -1,7 +1,7 @@
 {
-  "name": "pi-tools-compact-display",
+  "name": "pi-compact-display",
   "version": "1.0.0",
-  "description": "",
+  "description": "Compact display extension for Pi tools.",
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js"
@@ -10,8 +10,10 @@
     "test": "vitest run",
     "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "pi-package"
+  ],
+  "author": "Masterisk-F",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
@@ -19,13 +21,15 @@
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   },
-  "dependencies": {
-    "@earendil-works/pi-coding-agent": "^0.80.10",
-    "@earendil-works/pi-tui": "^0.80.10"
+  "dependencies": {},
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   },
   "pi": {
     "extensions": [
       "./dist/index.js"
-    ]
+    ],
+    "image": "https://raw.githubusercontent.com/Masterisk-F/pi-compact-display/master/screenshot1.png"
   }
 }
