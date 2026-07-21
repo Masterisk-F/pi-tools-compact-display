@@ -219,11 +219,18 @@ export default function (pi: ExtensionAPI) {
 		if (event.message.role !== "assistant") return;
 		if (!tracker.hasGrouped()) return;
 
+		// Guard 1: stopReason が "toolUse" のメッセージはツール要求中なのでスキップ
+		if ((event.message as any).stopReason === "toolUse") return;
+
 		const content = event.message.content;
 		if (!Array.isArray(content)) return;
 
-		// Only modify text-only messages (no tool_use = final response)
-		if (content.some((b: any) => b.type === "tool_use")) return;
+		// Guard 2: content に toolCall ブロックが含まれる場合はツール要求中なのでスキップ
+		// (stopReason ガードのフォールバック、型名は "tool_use" ではなく "toolCall")
+		if (content.some((b: any) => b.type === "toolCall")) return;
+
+		// Guard 3: テキストブロックが1つもなければサマリーを差し込めないのでスキップ（リセット防止）
+		if (!content.some((b: any) => b.type === "text")) return;
 
 		const summary = tracker.getSummaryLine();
 		const hasErrors = tracker.hasErrors();
