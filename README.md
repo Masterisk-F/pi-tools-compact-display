@@ -4,7 +4,7 @@ An extension for the Pi Assistant that allows you to finely customize the termin
 
 It helps keep your context and screen clean by limiting overly long tool outputs or hiding unnecessary tool calls, summarizing them instead.
 
-![screenshot](screenshot1.png)
+![screenshot](https://raw.githubusercontent.com/Masterisk-F/pi-compact-display/master/screenshot1.png)
 
 ## Features
 

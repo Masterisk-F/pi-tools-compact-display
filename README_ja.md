@@ -4,7 +4,7 @@ Piアシスタント向けの拡張機能です。アシスタントが各種ツ
 
 長すぎるツール出力を制限したり、不要なツール呼び出しを非表示にしてサマリーだけを出力するなど、コンテキストや画面をスッキリと保つのに役立ちます。
 
-![screenshot](screenshot1.png)
+![screenshot](https://raw.githubusercontent.com/Masterisk-F/pi-compact-display/master/screenshot1.png)
 
 ## 特徴
 
