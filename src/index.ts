@@ -15,7 +15,7 @@ import path from "path";
 import os from "os";
 
 export default function (pi: ExtensionAPI) {
-	const configPath = path.join(os.homedir(), ".pi", "agent", "extensions", "pi-tools-compact-display", "config.json");
+	const configPath = path.join(os.homedir(), ".pi", "agent", "extensions", "pi-compact-display", "config.json");
 	const config = loadConfig(configPath);
 	const tracker = new SummaryTracker();
 

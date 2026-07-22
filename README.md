@@ -18,6 +18,16 @@ It helps keep your context and screen clean by limiting overly long tool outputs
 
 ## Installation & Build
 
+### From npm (Recommended)
+
+You can install the extension directly from npm:
+
+```bash
+pi install npm:pi-compact-display
+```
+
+### From Source (Local Development)
+
 ```bash
 # Clone or navigate to the repository
 cd pi-compact-display

@@ -6,6 +6,10 @@
   "exports": {
     ".": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README_ja.md"
+  ],
   "scripts": {
     "test": "vitest run",
     "build": "tsc"
